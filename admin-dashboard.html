@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Mini Campus Event Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <div class="logo">🌿 Mini Campus Event Hub</div>
+        <p>Admin Dashboard</p>
+    </header>
+
+    <main class="auth-card">
+        <h2>Welcome, Admin!</h2>
+        <p>Post announcements for students.</p>
+
+        <form id="announcementForm">
+
+            <div class="form-group">
+                <label>Announcement Title</label>
+                <input type="text" id="announcementTitle"
+                    placeholder="Enter announcement title" required>
+            </div>
+
+            <div class="form-group">
+                <label>Announcement Content</label>
+                <textarea id="announcementContent"
+                    placeholder="Write your announcement here..."
+                    rows="6" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Event Date</label>
+                <input type="date" id="announcementDate">
+            </div>
+
+            <div class="form-group">
+                <label>Event Time</label>
+                <input type="time" id="announcementTime">
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="announcementLocation"
+                    placeholder="Enter location">
+            </div>
+
+            <button type="submit" class="submit-btn">
+                📢 Post Announcement
+            </button>
+        </form>
+
+        <p id="adminMessage"></p>
+
+        <hr>
+
+        <h3>Posted Announcements</h3>
+        <div id="adminAnnouncementList"></div>
+
+        <button class="submit-btn" onclick="logout()">
+            Logout
+        </button>
+    </main>
+</div>
+
+<script>
+const STORAGE_KEY = "campusAnnouncements";
+
+function getAnnouncements() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+}
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
+
+function renderAnnouncements() {
+    const list = document.getElementById("adminAnnouncementList");
+    const announcements = getAnnouncements();
+
+    if (announcements.length === 0) {
+        list.innerHTML = "<p>No announcements posted yet.</p>";
+        return;
+    }
+
+    list.innerHTML = announcements.map(item => `
+        <div style="border:1px solid #bbf7d0; padding:15px; margin:12px 0; border-radius:10px;">
+            <h3>${escapeHTML(item.title)}</h3>
+            <p>${escapeHTML(item.content)}</p>
+            <p>📅 ${escapeHTML(item.date || "To be announced")}</p>
+            <p>⏰ ${escapeHTML(item.time || "To be announced")}</p>
+            <p>📍 ${escapeHTML(item.location || "To be announced")}</p>
+            <small>Posted by Admin</small>
+            <br><br>
+            <button class="submit-btn"
+                style="background:#b91c1c;"
+                onclick="deleteAnnouncement(${item.id})">
+                Delete
+            </button>
+        </div>
+    `).join("");
+}
+
+document.getElementById("announcementForm")
+.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const title = document.getElementById("announcementTitle").value.trim();
+    const content = document.getElementById("announcementContent").value.trim();
+
+    if (!title || !content) {
+        alert("Please complete the required fields.");
+        return;
+    }
+
+    const announcements = getAnnouncements();
+
+    announcements.unshift({
+        id: Date.now(),
+        title: title,
+        content: content,
+        date: document.getElementById("announcementDate").value,
+        time: document.getElementById("announcementTime").value,
+        location: document.getElementById("announcementLocation").value.trim(),
+        postedAt: new Date().toISOString()
+    });
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(announcements));
+
+    this.reset();
+
+    document.getElementById("adminMessage").textContent =
+        "✓ Announcement posted successfully!";
+
+    document.getElementById("adminMessage").style.color = "green";
+
+    renderAnnouncements();
+});
+
+function deleteAnnouncement(id) {
+    if (!confirm("Delete this announcement?")) return;
+
+    const updated = getAnnouncements().filter(item => item.id !== id);
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+
+    renderAnnouncements();
+}
+
+function logout() {
+    window.location.href = "index.html";
+}
+
+renderAnnouncements();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Campus Event Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <div class="logo">🌿 Mini Campus Event Hub</div>
+            <p>Your Campus Events, All in One Place</p>
+        </header>
+
+        <main class="auth-card">
+            <div class="tabs">
+                <button id="loginTab" class="tab active"
+                    onclick="showForm('login')">Login</button>
+                <button id="signupTab" class="tab"
+                    onclick="showForm('signup')">Sign Up</button>
+            </div>
+
+            <h2 id="formTitle">Welcome Back!</h2>
+            <p id="formDescription">Login to your account</p>
+
+            <form id="authForm">
+                <div id="nameGroup" class="form-group hidden">
+                    <label>Full Name</label>
+                    <input type="text" id="fullName"
+                        placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email"
+                        placeholder="Enter your school email" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Account Type</label>
+                    <select id="accountType" required>
+                        <option value="">Select account type</option>
+                        <option value="admin">Admin</option>
+                        <option value="student">Student</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password"
+                        placeholder="Enter your password" required>
+                </div>
+
+                <div id="confirmGroup" class="form-group hidden">
+                    <label>Confirm Password</label>
+                    <input type="password" id="confirmPassword"
+                        placeholder="Confirm your password">
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Login
+                </button>
+            </form>
+
+            <p id="message" class="message"></p>
+
+            <p class="switch-text" id="switchText">
+                Don't have an account?
+                <a href="#" onclick="showForm('signup'); return false;">
+                    Sign Up
+                </a>
+            </p>
+        </main>
+
+        <footer>
+            <p>© 2026 Mini Campus Event Hub</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

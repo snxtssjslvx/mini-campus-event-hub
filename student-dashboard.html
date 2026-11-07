@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Mini Campus Event Hub</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            background: #f0fdf4;
+        }
+
+        .auth-card {
+            max-width: 750px;
+        }
+
+        .announcement-card {
+            background: white;
+            border: 1px solid #bbf7d0;
+            border-left: 6px solid #166534;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 18px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .announcement-card h3 {
+            color: #14532d;
+            margin-top: 8px;
+        }
+
+        .announcement-content {
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .announcement-label {
+            color: #166534;
+            background: #dcfce7;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .posted-by {
+            color: #166534;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 35px 15px;
+            background: #f0fdf4;
+            border-radius: 10px;
+            color: #4b5563;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="header">
+        <div class="logo">🌿 Mini Campus Event Hub</div>
+        <p>Student Dashboard</p>
+    </header>
+
+    <main class="auth-card">
+
+        <h2>Welcome, Student!</h2>
+        <p>Stay updated with the latest campus announcements.</p>
+
+        <hr>
+
+        <h2 style="color:#14532d;">📢 Announcements</h2>
+
+        <div id="studentAnnouncements">
+            <p>Loading announcements...</p>
+        </div>
+
+        <button class="submit-btn" onclick="logout()">
+            Logout
+        </button>
+
+    </main>
+</div>
+
+<script>
+const STORAGE_KEY = "campusAnnouncements";
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
+
+function displayAnnouncements() {
+    const container = document.getElementById("studentAnnouncements");
+
+    const announcements = JSON.parse(
+        localStorage.getItem(STORAGE_KEY) || "[]"
+    );
+
+    if (announcements.length === 0) {
+        container.innerHTML = `
+            <div class="empty-message">
+                <h3>🌿 No Announcements Yet</h3>
+                <p>There are no announcements at the moment.</p>
+                <p>Please check again later.</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = announcements.map(item => `
+        <div class="announcement-card">
+
+            <span class="announcement-label">
+                NEW ANNOUNCEMENT
+            </span>
+
+            <h3>📢 ${escapeHTML(item.title)}</h3>
+
+            <p class="announcement-content">
+                ${escapeHTML(item.content)}
+            </p>
+
+            <hr>
+
+            <p>📅 <strong>Date:</strong>
+                ${escapeHTML(item.date || "To be announced")}
+            </p>
+
+            <p>⏰ <strong>Time:</strong>
+                ${escapeHTML(item.time || "To be announced")}
+            </p>
+
+            <p>📍 <strong>Location:</strong>
+                ${escapeHTML(item.location || "To be announced")}
+            </p>
+
+            <p class="posted-by">Posted by Admin 🌿</p>
+
+        </div>
+    `).join("");
+}
+
+function logout() {
+    window.location.href = "index.html";
+}
+
+displayAnnouncements();
+</script>
+
+</body>
+</html>
